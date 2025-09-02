@@ -6,8 +6,7 @@ def get_files_info(working_directory, directory=None):
     base = os.path.abspath(working_directory)
     target = os.path.abspath(os.path.join(working_directory, directory)) if directory else base
 
-    if not (target == base or target.startswith(base + os.sep)):
-
+    if os.path.commonpath([base,target]) != base:
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
 
     # Check if it's a valid directory
@@ -29,7 +28,7 @@ def get_file_content(working_directory, file_path):
     base = os.path.abspath(working_directory)
     target = os.path.abspath(os.path.join(working_directory, file_path))
 
-    if not (target == base or target.startswith(base + os.sep)):
+    if os.path.commonpath([base,target]) != base:
         return f'Error: Cannot access "{file_path}" as it is outside the permitted working directory'
 
     # Check if it's a valid file
@@ -46,3 +45,26 @@ def get_file_content(working_directory, file_path):
             return content
     except Exception as e:
         return f"Error: Cannot read file {file_path}: {str(e)}"
+
+
+
+def write_file(working_directory, file_path,content):
+    base = os.path.abspath(working_directory)
+    target = os.path.abspath(os.path.join(working_directory, file_path))
+
+    if not (target == base or target.startswith(base + os.sep)):
+        return f'Error: Cannot access "{file_path}" as it is outside the permitted working directory'
+    if os.path.exists(target):
+        try:
+            with open(target, "w") as f:
+                f.write(content)
+                return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
+        except Exception as e:
+            return f'Write fail to "{file_path}: {e}"'
+
+    try:
+        with open(target, "x") as f:
+            f.write(content)
+            return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
+    except Exception as e:
+        return f'Write fail to "{file_path}: {e}"'
