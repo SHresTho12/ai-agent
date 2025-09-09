@@ -1,6 +1,8 @@
 
 
 import os
+from sys import deactivate_stack_trampoline
+from google.genai import types
 
 def get_files_info(working_directory, directory=None):
     base = os.path.abspath(working_directory)
@@ -68,3 +70,68 @@ def write_file(working_directory, file_path,content):
             return f'Successfully wrote to "{file_path}" ({len(content)} characters written)'
     except Exception as e:
         return f'Write fail to "{file_path}: {e}"'
+
+
+
+
+## Schemas
+
+schema_get_files_info = types.FunctionDeclaration(
+    name="get_files_info",
+    description="Lists files in the specified directory along with their sizes, constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "directory": types.Schema(
+                type=types.Type.STRING,
+                description="The directory to list files from, relative to the working directory. If not provided, lists files in the working directory itself.",
+            ),
+        },
+    ),
+)
+
+
+
+
+schema_get_file_content = types.FunctionDeclaration(
+    name="get_file_content",
+    description="Reads file contents of a specified file with a maximum of 10000 characters",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "working_directory": types.Schema(
+                type=types.Type.STRING,
+                description="The base working directory from which file access is permitted",
+            ),
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file (relative to the working directory)",
+            ),
+        },
+        required=["working_directory", "file_path"],
+    ),
+)
+
+
+schema_write_file = types.FunctionDeclaration(
+    name="write_file",
+    description="Writes content to a specified file inside the working directory. Overwrites if file exists, otherwise creates a new one.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "working_directory": types.Schema(
+                type=types.Type.STRING,
+                description="The base working directory from which file access is permitted",
+            ),
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The path to the file (relative to the working directory)",
+            ),
+            "content": types.Schema(
+                type=types.Type.STRING,
+                description="The text content to write into the file",
+            ),
+        },
+        required=["working_directory", "file_path", "content"],
+    ),
+)
