@@ -25,7 +25,6 @@ This makes it useful for interactive coding tasks, debugging, and project manage
 │ │ ├── calculator.py
 │ │ ├── morelorem.txt
 │ │ ├── render.py
-│ │ └── pycache/ # Auto-generated cache files
 │ ├── README.md
 │ └── tests.py
 │
@@ -33,7 +32,6 @@ This makes it useful for interactive coding tasks, debugging, and project manage
 │ ├── function_executor.py
 │ ├── get_files_info.py
 │ ├── run_python.py
-│ └── pycache/ # Auto-generated cache files
 │
 ├── schemas/ # Function schemas for LLM tools
 │
