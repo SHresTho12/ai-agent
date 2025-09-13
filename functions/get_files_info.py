@@ -5,8 +5,13 @@ from sys import deactivate_stack_trampoline
 from google.genai import types
 
 def get_files_info(working_directory, directory=None):
+    
+
     base = os.path.abspath(working_directory)
     target = os.path.abspath(os.path.join(working_directory, directory)) if directory else base
+    
+    
+    
 
     if os.path.commonpath([base,target]) != base:
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
@@ -16,12 +21,15 @@ def get_files_info(working_directory, directory=None):
         return f'Error: "{directory}" is not a directory'
 
     try:
+        files_info= []
         for t in os.listdir(target):
             t_path = os.path.join(target,t)
-            if os.path.isfile(t_path):
-                print(f"- {t}: file_size={os.path.getsize(t_path)} bytes, is_dir=False")
-            else:
-                print(f"- {t}: file_size={os.path.getsize(t_path)} bytes, is_dir=True")
+            t_size = 0
+            is_dir = os.path.isdir(t_path)
+            t_size = os.path.getsize(t_path)
+            files_info.append({"name": t, "file_size": t_size, "is_dir": is_dir})
+        return "\n".join([f"- {f['name']}: size={f['file_size']} bytes, dir={f['is_dir']}" for f in files_info])
+
     except:
         return f"Error: Cannot list contents of {directory}"
     
